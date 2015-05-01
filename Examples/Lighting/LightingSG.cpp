@@ -19,7 +19,7 @@
 #include <osg/Material>
 #include <osg/Notify>
 
-osg::Geode*
+osg::ref_ptr<osg::Geode>
 createLightPoint()
 {
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
@@ -49,10 +49,10 @@ createLightPoint()
     pt->setSize( 10.f );
     state->setAttribute( pt.get() );
 
-    return( geode.release() );
+    return geode.get();
 }
 
-osg::Drawable*
+osg::ref_ptr<osg::Drawable>
 createPlane()
 {
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
@@ -93,10 +93,10 @@ createPlane()
             osg::PrimitiveSet::QUAD_STRIP, len+len, indices ) );
     }
 
-    return( geom.release() );
+    return geom.get();
 }
 
-osg::Node*
+osg::ref_ptr<osg::Node>
 createSceneGraph()
 {
     // Create the root node and set state for the entire subgraph.
@@ -160,7 +160,7 @@ createSceneGraph()
     if (!lozenge.valid())
     {
         osg::notify( osg::FATAL ) << "Unable to load data file. Exiting." << std::endl;
-        return( NULL );
+        return NULL;
     }
     {
         osg::ref_ptr<osg::MatrixTransform> mt = new osg::MatrixTransform;
@@ -274,7 +274,7 @@ createSceneGraph()
     }
 
     osg::ref_ptr<osg::Geode> planeGeode = new osg::Geode;
-    planeGeode->addDrawable( createPlane() );
+    planeGeode->addDrawable( createPlane().get() );
     {
         osg::StateSet* state = planeGeode->getOrCreateStateSet();
 
@@ -292,5 +292,5 @@ createSceneGraph()
     root->addChild( planeGeode.get() );
 
 
-    return( root.release() );
+    return root.get();
 }
